@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_teal">#FF04342C</color>
+    <color name="streak_teal">#FF5DCAA5</color>
+    <color name="flame_amber">#FFEF9F27</color>
+    <color name="flame_coral">#FFD85A30</color>
+    <color name="background_warm">#FFF1EFE8</color>
+    <color name="ink_text">#FF2C2C2A</color>
+    <color name="missed_day">#FFE24B4A</color>
+    <color name="goal_hit">#FF639922</color>
+    <color name="ic_launcher_background">#FF04342C</color>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.StreakUp" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/primary_teal</item>
+        <item name="android:navigationBarColor">@color/background_warm</item>
+        <item name="android:windowBackground">@color/background_warm</item>
+    </style>
+
+    <!-- Pre-Android 12: plain warm background while Compose loads -->
+    <style name="Theme.StreakUp.Starting" parent="Theme.StreakUp">
+        <item name="android:windowBackground">@color/background_warm</item>
+    </style>
+</resources>

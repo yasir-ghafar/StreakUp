@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+: match Compose splash (icon + warm background) -->
+    <style name="Theme.StreakUp.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background_warm</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.StreakUp</item>
+    </style>
+</resources>
