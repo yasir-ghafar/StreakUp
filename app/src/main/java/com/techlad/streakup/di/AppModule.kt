@@ -10,6 +10,8 @@ import com.techlad.streakup.data.repository.HabitRepository
 import com.techlad.streakup.data.repository.SettingsRepository
 import com.techlad.streakup.data.repository.SyncRepository
 import com.techlad.streakup.ui.screens.auth.AuthViewModel
+import com.techlad.streakup.ui.screens.auth.ForgotPasswordViewModel
+import com.techlad.streakup.ui.screens.auth.ResetPasswordViewModel
 import com.techlad.streakup.ui.screens.auth.SignUpViewModel
 import com.techlad.streakup.ui.screens.habit.HabitDetailViewModel
 import com.techlad.streakup.ui.screens.habit.HabitFormViewModel
@@ -47,6 +49,8 @@ val appModule = module {
     viewModel { SplashViewModel(get(), get()) }
     viewModel { AuthViewModel(get()) }
     viewModel { SignUpViewModel(get()) }
+    viewModel { ForgotPasswordViewModel(get()) }
+    viewModel { ResetPasswordViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { HabitFormViewModel(get()) }
     viewModel { (habitId: String?) -> HabitDetailViewModel(get(), habitId) }

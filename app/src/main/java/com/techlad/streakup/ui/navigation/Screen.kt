@@ -4,6 +4,8 @@ sealed class Screen(val route: String) {
     data object Splash : Screen("splash")
     data object Login : Screen("login")
     data object SignUp : Screen("signup")
+    data object ForgotPassword : Screen("forgot_password")
+    data object ResetPassword : Screen("reset_password")
     data object Home : Screen("home")
     data object AddHabit : Screen("add_habit")
     data object EditHabit : Screen("edit_habit/{habitId}") {

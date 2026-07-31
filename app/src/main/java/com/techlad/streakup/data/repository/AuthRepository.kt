@@ -7,6 +7,7 @@ import com.techlad.streakup.data.remote.dto.UserSettingsDto
 import com.techlad.streakup.domain.model.AppTheme
 import com.techlad.streakup.domain.model.AuthState
 import com.techlad.streakup.domain.model.UserSettings
+import com.techlad.streakup.data.remote.AuthDeepLink
 import com.techlad.streakup.data.remote.SupabaseProvider
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -28,7 +29,14 @@ class AuthRepository(
     private val _authState = MutableStateFlow(AuthState())
     val authState: Flow<AuthState> = _authState.asStateFlow()
 
+    private val _pendingPasswordReset = MutableStateFlow(false)
+    val pendingPasswordReset: Flow<Boolean> = _pendingPasswordReset.asStateFlow()
+
     suspend fun checkSession() {
+        if (_pendingPasswordReset.value) {
+            _authState.value = AuthState(isLoading = false)
+            return
+        }
         _authState.value = _authState.value.copy(isLoading = true)
         val settings = userSettingsDao.getSettingsOnce()?.toDomain()
 
@@ -124,8 +132,67 @@ class AuthRepository(
     }
 
     suspend fun signOut() {
-        runCatching { supabase?.auth?.signOut() }
+        try {
+            supabase?.auth?.signOut()
+        } catch (_: Exception) {
+            // Clear local auth state even if remote sign-out fails.
+        }
+        _pendingPasswordReset.value = false
         _authState.value = AuthState(isLoading = false)
+    }
+
+    suspend fun resetPasswordForEmail(email: String): Result<Unit> = runCatching {
+        val client = requireNotNull(supabase) { "Supabase not configured" }
+        client.auth.resetPasswordForEmail(
+            email = email.trim(),
+            redirectUrl = AuthDeepLink.URI,
+        )
+    }
+
+    suspend fun updatePassword(newPassword: String): Result<Unit> = runCatching {
+        val client = requireNotNull(supabase) { "Supabase not configured" }
+        client.auth.updateUser {
+            password = newPassword
+        }
+        val session = client.auth.currentSessionOrNull()
+            ?: error("Password update failed. Open the reset link from your email again.")
+        _pendingPasswordReset.value = false
+        _authState.value = AuthState(
+            isLoading = false,
+            isAuthenticated = true,
+            isGuest = false,
+            userId = session.user?.id,
+            email = session.user?.email,
+        )
+    }
+
+    fun markPasswordRecoveryPending() {
+        _pendingPasswordReset.value = true
+    }
+
+    fun clearPasswordRecoveryPending() {
+        _pendingPasswordReset.value = false
+    }
+
+    suspend fun cancelPasswordRecovery() {
+        signOut()
+    }
+
+    fun hasRecoverySession(): Boolean {
+        return _pendingPasswordReset.value &&
+            supabase?.auth?.currentSessionOrNull() != null
+    }
+
+    suspend fun refreshAuthFromSession() {
+        val client = supabase ?: return
+        val session = client.auth.currentSessionOrNull() ?: return
+        _authState.value = AuthState(
+            isLoading = false,
+            isAuthenticated = true,
+            isGuest = false,
+            userId = session.user?.id,
+            email = session.user?.email,
+        )
     }
 
     fun getCurrentUserId(): String? = _authState.value.userId

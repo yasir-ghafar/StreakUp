@@ -11,7 +11,10 @@ fun createSupabaseClient(): SupabaseClient = createSupabaseClient(
     supabaseUrl = BuildConfig.SUPABASE_URL,
     supabaseKey = BuildConfig.SUPABASE_ANON_KEY,
 ) {
-    install(Auth)
+    install(Auth) {
+        scheme = AuthDeepLink.SCHEME
+        host = AuthDeepLink.HOST
+    }
     install(Postgrest)
     install(Realtime)
 }
