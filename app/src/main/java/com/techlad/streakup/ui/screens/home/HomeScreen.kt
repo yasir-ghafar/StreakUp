@@ -1,9 +1,10 @@
 package com.techlad.streakup.ui.screens.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,18 +29,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.techlad.streakup.ui.components.HabitCard
-import com.techlad.streakup.ui.components.ProgressRing
+import com.techlad.streakup.ui.components.TodaysStreakCard
 import com.techlad.streakup.ui.theme.BackgroundWarm
 import com.techlad.streakup.ui.theme.StreakUpThemeExtras
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -50,9 +51,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val habits by viewModel.habits.collectAsState()
-    val completion by viewModel.completionPercent.collectAsState()
     val reorderMode by viewModel.reorderMode.collectAsState()
-    val today = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMM d"))
+    val doneCount = remember(habits) { habits.count { it.isCheckedToday } }
+    val bestStreak = remember(habits) { habits.maxOfOrNull { it.longestStreak } ?: 0 }
 
     val extras = StreakUpThemeExtras.colors
 
@@ -100,26 +101,15 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding),
         ) {
-            Column(
+            TodaysStreakCard(
+                doneCount = doneCount,
+                totalCount = habits.size,
+                bestStreak = bestStreak,
+                activeCount = habits.size,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = today,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(16.dp))
-                ProgressRing(progress = completion)
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "${habits.count { it.isCheckedToday }} of ${habits.size} done today",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+            )
 
             if (habits.isEmpty()) {
                 Column(

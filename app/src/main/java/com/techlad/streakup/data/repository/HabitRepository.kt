@@ -62,10 +62,14 @@ class HabitRepository(
                 .map { LocalDate.parse(it.checkedDate) }
                 .toSet()
             val (current, longest) = StreakCalculator.calculateStreaks(item.habit, dates, today)
+            val recentDays = (6 downTo 0).map { offset ->
+                today.minusDays(offset.toLong()) in dates
+            }
             item.copy(
                 currentStreak = current,
                 longestStreak = longest,
                 weeklyProgress = StreakCalculator.weeklyProgress(dates, today),
+                recentDays = recentDays,
             )
         }
     }

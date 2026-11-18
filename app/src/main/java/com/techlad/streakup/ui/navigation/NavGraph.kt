@@ -1,5 +1,7 @@
 package com.techlad.streakup.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,7 +18,7 @@ import com.techlad.streakup.domain.model.UserSettings
 import com.techlad.streakup.data.repository.AuthRepository
 import com.techlad.streakup.data.repository.SettingsRepository
 import com.techlad.streakup.ui.screens.auth.ForgotPasswordScreen
-import com.techlad.streakup.ui.screens.auth.LoginScreen
+import com.techlad.streakup.ui.screens.auth.LoginScreenRedesign
 import com.techlad.streakup.ui.screens.auth.ResetPasswordScreen
 import com.techlad.streakup.ui.screens.auth.SignUpScreen
 import com.techlad.streakup.ui.screens.habit.HabitDetailScreen
@@ -31,6 +33,7 @@ import com.techlad.streakup.ui.theme.StreakUpTheme
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StreakUpNavHost(
     splashViewModel: SplashViewModel,
@@ -73,7 +76,7 @@ fun StreakUpNavHost(
             }
 
             composable(Screen.Login.route) {
-                LoginScreen(
+                LoginScreenRedesign(
                     onAuthenticated = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }

@@ -39,12 +39,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.techlad.streakup.domain.model.FrequencyType
 import com.techlad.streakup.ui.components.parseColor
 import com.techlad.streakup.ui.theme.HabitColors
 import com.techlad.streakup.ui.theme.HabitEmojis
+import com.techlad.streakup.ui.theme.StreakUpTheme
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -171,5 +173,13 @@ fun HabitFormScreen(
                 Text(if (habitId != null) "Save Changes" else "Create Habit")
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewHabitFormScreen() {
+    StreakUpTheme() {
+
     }
 }

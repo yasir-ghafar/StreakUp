@@ -1,5 +1,6 @@
 package com.techlad.streakup.ui.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -7,12 +8,16 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun PasswordTextField(
@@ -22,13 +27,19 @@ fun PasswordTextField(
     passwordVisible: Boolean,
     onToggleVisibility: () -> Unit,
     modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(14.dp),
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    usePlaceholder: Boolean = false,
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
+        label = if (usePlaceholder) null else ({ Text(label) }),
+        placeholder = if (usePlaceholder) ({ Text(label) }) else null,
         modifier = modifier,
         singleLine = true,
+        shape = shape,
+        colors = colors,
         visualTransformation = if (passwordVisible) {
             VisualTransformation.None
         } else {

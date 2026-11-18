@@ -39,6 +39,8 @@ data class HabitWithStatus(
     val currentStreak: Int,
     val longestStreak: Int,
     val weeklyProgress: Int = 0,
+    /** Last 7 days oldest→newest (index 6 = today). */
+    val recentDays: List<Boolean> = List(7) { false },
 )
 
 data class UserSettings(
